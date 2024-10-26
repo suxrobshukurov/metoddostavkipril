@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+env:
+  PUBLIC_REGISTRY_HOST: docker.io
+  PUBLIC_REGISTRY_OWNER: suxrobjonfalcon
+  PUBLIC_REGISTRY_APP_NAME: module-39
+
+jobs:
+  build_app:
+    runs-on: ubuntu-latest
+    container: golang:1.15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build app
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./module-39 ./
+  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run tests
+        run: echo "No tests!"
+  
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install golangci-lint
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.41.1
+      - name: Check version of golangci-lint
+        run: golangci-lint --version
+      - name: Lint the code
+        run: golangci-lint run
+    continue-on-error: true
+
+  build_image_stable:
+    runs-on: ubuntu-latest
+    container: docker:latest
+    services:
+      docker:
+        image: docker:dind
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build stable image
+        run: echo "No build image commands!!!"
+    if: github.ref == 'refs/heads/main'
+
+  build_image_latest:
+    runs-on: ubuntu-latest
+    container: docker:latest
+    services:
+      docker:
+        image: docker:dind
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build latest image
+        run: echo "No build image commands!!!"
+    if: github.event_name == 'manual' && github.ref == 'refs/heads/main'
+
+# stages:
+#   - build
+#   - test
+#   - image
+
+# variables:
+#   PUBLIC_REGISTRY_HOST: docker.io
+#   PUBLIC_REGISTRY_OWNER: suxrobjonfalcon
+#   PUBLIC_REGISTRY_APP_NAME: module-39
+
+# build_app:
+#   stage: build
+#   image: golang:1.15
+#   script:
+#     - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./${PUBLIC_REGISTRY_APP_NAME} ./
+
+# test:
+#   stage: test
+#   image: golang:1.15
+#   script:
+#     - echo "No tests!"
+
+# lint:
+#   stage: test
+#   image: golang:1.15
+#   script:
+#     - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.41.1
+#     - golangci-lint --version
+#     - golangci-lint run
+#   allow_failure: true
+
+# build_image:stable:
+#   stage: image
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   script:
+#     - echo "No build image commands!!!"
+#   only:
+#     - master
+
+# build_image:latest:
+#   stage: image
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   script:
+#     - echo "No build image commands!!!"
+#   when: manual
