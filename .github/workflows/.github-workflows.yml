@@ -8,7 +8,7 @@ on:
 
 env:
   PUBLIC_REGISTRY_HOST: docker.io
-  PUBLIC_REGISTRY_OWNER: suxrobjonfalcon
+  PUBLIC_REGISTRY_OWNER: suxrob1124
   PUBLIC_REGISTRY_APP_NAME: module-39
 
 jobs:
