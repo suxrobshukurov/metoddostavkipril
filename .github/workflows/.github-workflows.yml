@@ -68,6 +68,22 @@ jobs:
       - name: Build latest image
         run: echo "No build image commands!!!"
     if: github.event_name == 'manual' && github.ref == 'refs/heads/main'
+
+  docker_deploy:
+    runs-on: ubuntu-latest
+    container: docker:latest
+    services:
+      docker:
+        image: docker:dind
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Login to Docker.io
+        run: docker login -u ${PUBLIC_REGISTRY_OWNER} -p ${{ secrets.DOCKERHUB_TOKEN }} ${PUBLIC_REGISTRY_HOST}
+      - name: Build image
+        run: docker build -t ${PUBLIC_REGISTRY_HOST}/${PUBLIC_REGISTRY_OWNER}/${PUBLIC_REGISTRY_APP_NAME}:latest ./
+      - name: Push image
+        run: docker push ${PUBLIC_REGISTRY_HOST}/${PUBLIC_REGISTRY_OWNER}/${PUBLIC_REGISTRY_APP_NAME}:latest
 # stages:
 #   - build
 #   - test
