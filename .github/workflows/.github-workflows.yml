@@ -2,10 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
-    
+    branches: ['main']
+
 env:
   PUBLIC_REGISTRY_HOST: docker.io
   PUBLIC_REGISTRY_OWNER: suxrobjonfalcon
@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Build app
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./module-39 ./
-  
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Run tests
         run: echo "No tests!"
-  
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -66,8 +66,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Build latest image
         run: echo "No build image commands!!!"
-    if: github.event_name == 'manual' && github.ref == 'refs/heads/main'
-
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 # stages:
 #   - build
 #   - test
