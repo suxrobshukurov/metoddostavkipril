@@ -27,7 +27,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Run tests
-        run: echo "No tests!"
+        run: go test -v ./...
 
   lint:
     runs-on: ubuntu-latest
